@@ -1,4 +1,4 @@
-# mercy-drugtables
+# mercy-dumpsters
 
 This resource is made for the **Mercy Framework**, if you need any help please join our [discord server](https://dsc.gg/mercy-coll) for support.
 
