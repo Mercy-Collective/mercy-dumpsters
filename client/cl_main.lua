@@ -25,19 +25,30 @@ end)
 -- [ Functions ] --
 
 function InitDumpsters()
-    for _, DModel in pairs(Config.Dumpsters) do
+    for k, DModel in pairs(Config.Dumpsters) do
         exports['mercy-ui']:AddEyeEntry(GetHashKey(DModel), {
             Type = 'Model',
             Model = DModel,
-            SpriteDistance = 4.0,
+            SpriteDistance = 3.0,
             Options = {
+                {
+                    Name = 'sanitation_pickup_trash',
+                    Icon = 'fas fa-circle',
+                    Label = 'Pickup Trash',
+                    EventType = 'Client',
+                    EventName = 'mercy-jobs/client/sanitation/pickup-trash',
+                    EventParams = '',
+                    Enabled = function(Entity)
+                        return (exports['mercy-phone']:IsJobCenterTaskActive('sanitation', 4) or exports['mercy-phone']:IsJobCenterTaskActive('sanitation', 6))
+                    end,
+                },
                 {
                     Name = 'search_dumpster',
                     Icon = 'fas fa-trash-alt',
                     Label = 'Search',
                     EventType = 'Client',
                     EventName = 'mercy-dumpsters/client/search-dumpster',
-                    EventParams = '',
+                    EventParams = {['Model'] = DModel},
                     Enabled = function(Entity)
                         return true
                     end,
@@ -59,11 +70,12 @@ end
 RegisterNetEvent("mercy-dumpsters/client/search-dumpster", function(Data, Entity)
     local IsSearched = Modules.Callback.SendCallback('mercy-dumpsters/server/is-dumpster-searched', ObjToNet(Entity))
     DebugPrint('Already Searched: ' .. tostring(IsSearched))
+    local Type = string.find(Data.Model, 'binbag') and 'bag' or string.find(Data.Model, 'bin') and 'bin' or 'dumpster'
     if IsSearched then
-        return exports['mercy-ui']:Notify('already-searched', 'This dumpster is empty..', 'error')
+        return exports['mercy-ui']:Notify('already-searched', 'This '..Type..' is empty..', 'error')
     end
     exports['mercy-inventory']:SetBusyState(true)
-    exports['mercy-ui']:ProgressBar('Searching...', Config.SearchTime, {
+    exports['mercy-ui']:ProgressBar('Searching '..Type..'...', Config.SearchTime, {
         ['AnimDict'] = 'mini@repair',
         ['AnimName'] = 'fixing_a_ped',
         ['AnimFlag'] = 0,
