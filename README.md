@@ -11,7 +11,7 @@ This resource has been created by **Mercy Collective**.
 
 ## REQUIREMENTS
 
-# Disable following code in mercy-jobs/client/jobcenter/cl_sanitation.lua 
+## Disable following code in mercy-jobs/client/jobcenter/cl_sanitation.lua 
 ```lua
     for k, v in pairs(Dumpsters) do
         exports['mercy-ui']:AddEyeEntry(GetHashKey(v), {
